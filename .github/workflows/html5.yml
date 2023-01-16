@@ -1,26 +1,34 @@
 # This is a basic workflow to help you get started with Actions
 
-name: HTML5 Build CI
+name: HTML5 deployment thingy
 
-# Controls when the workflow will run
-on: [push, pull_request]
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  deployment:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
+    environment: github-pages
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - uses: krdlab/setup-haxe@v1
+
+      - uses: krdlab/setup-haxe@master
         with:
-          haxe-version: 4.1.5
+          haxe-version: 4.2.5
       # Runs a set of commands using the runners shell
-      - name: script run line haha
+      - name: Install Haxelib
         run: |
           sudo add-apt-repository ppa:haxe/releases -y
           sudo apt-get update
@@ -40,5 +48,5 @@ jobs:
           
       - uses: actions/upload-artifact@v2
         with:
-          name: HTML5 Build
+          name: HTML5 thing
           path: export/release/html5/bin
