@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxTimer;
 import lime.app.Future;
 import flixel.FlxState;
 import js.html.Clipboard;
@@ -49,6 +50,7 @@ class DragNDrop extends FlxState
     add(buttonTxt);
     
     loadedFiles = new FlxText(0, 0, 0, "Files loaded:");
+    for(file in Upload.loaded) loadedFiles.text += '\n${file}';
     add(loadedFiles);
 	}
 
@@ -98,7 +100,9 @@ class DragNDrop extends FlxState
         loadingImage.onComplete(function(image) {
           filesLoadingQueue.remove(fileName);
           trace('file $fileName loaded succesfully!');
+          Upload.loaded.push(curFile.name);
           Upload.graphics.set(fileName, image);
+          loadedFiles.text += '\n${curFile.name}';
         });
       case 'mp3' | 'ogg' | 'wav': //same thing as image but weirder cause theres no built in loading future guy for sounds
         var loadingSound:Future<Sound> = new Future<Sound>(function(){
@@ -108,12 +112,14 @@ class DragNDrop extends FlxState
         loadingSound.onComplete(function(sound) {
           filesLoadingQueue.remove(fileName);
           trace('file $fileName loaded succesfully!');
+          Upload.loaded.push(curFile.name);
           Upload.sounds.set(fileName, sound);
+          loadedFiles.text += '\n${curFile.name}';
         });
       default: //just add the file to whatever
         Upload.set(curFile.name, curFile.data);
+        loadedFiles.text += '\n${curFile.name}';
     }
-    loadedFiles.text += '${curFile.name}\n';
     curFile.removeEventListener(Event.COMPLETE, uploadedFile);
     curFile.removeEventListener(Event.SELECT, loadedFile);
     curFile = null;
