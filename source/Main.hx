@@ -32,37 +32,5 @@ class Main extends Sprite
 	{
 		super();
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, framerate, framerate, skipSplash, startFullscreen));
-		
-		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
-	}
-	
-	function onCrash(e:UncaughtErrorEvent):Void
-	{
-		var errMsg:String = "";
-		var path:String;
-		var callStack:Array<StackItem> = CallStack.exceptionStack(true);
-		var dateNow:String = Date.now().toString();
-
-		dateNow = dateNow.replace(" ", "_");
-		dateNow = dateNow.replace(":", "'");
-
-		path = "./crash/" + "SandMaster_" + dateNow + ".txt";
-
-		for (stackItem in callStack)
-		{
-			switch (stackItem)
-			{
-				case FilePos(s, file, line, column):
-					errMsg += file + " (line " + line + ")\n";
-				default:
-					trace(stackItem);
-			}
-		}
-
-		trace(errMsg);
-
-		errMsg += "\nUncaught Error: " + e.error + "\nCrash Handler written by: sqirra-rng";
-		trace(errMsg);
-		Application.current.window.alert(errMsg, "Error!");
 	}
 }
