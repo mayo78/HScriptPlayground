@@ -31,6 +31,7 @@ class DragNDrop extends FlxState
   var clipboardCodeTxt:FlxText;
   var curFile:FileReference;
   var loadedFiles:FlxText;
+  var _cbCount:Int = 0;
 	override public function create()
 	{
 		super.create();
@@ -91,9 +92,10 @@ class DragNDrop extends FlxState
         var wasCode:Bool = FlxG.mouse.overlaps(clipboardCodeButton);
         var ireallypromise:Promise<String> = Clipboard.readText();
         ireallypromise.then(function(myactual) {
-          if(wasCode)
+          if(wasCode){
             addFile(myactual, 'ClipboardCode_${_cbCount}', 'hx');
-          else{
+            _cbCount++;
+          }else{
             var woah:Array<String> = myactual.split('/');
             var filename:String = woah[woah.length-1];
             var ok:String = filename.split('.');
