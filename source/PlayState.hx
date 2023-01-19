@@ -20,9 +20,9 @@ class PlayState extends FlxState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-    if(FlxG.keys.justPressed.BACKSPACE)
-      FlxG.switchState(new DragNDrop());
-		call('update', [elapsed]);
+		if(FlxG.keys.justPressed.BACKSPACE)
+		FlxG.switchState(new DragNDrop());
+			call('update', [elapsed]);
 	}
 	public function error(e:String)
 	{
