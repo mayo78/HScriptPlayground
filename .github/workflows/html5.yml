@@ -45,4 +45,3 @@ jobs:
         with:
           name: html5Build
           path: 'export/release/html5/bin'
-      - uses: actions/upload-artifact@v2
