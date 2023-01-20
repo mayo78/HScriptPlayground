@@ -85,17 +85,22 @@ class DragNDrop extends FlxState
         curFile.addEventListener(Event.COMPLETE, loadedFile);
         curFile.browse();
       }else if(FlxG.mouse.overlaps(clipboardButton) || FlxG.mouse.overlaps(clipboardCodeButton)){
-        var myactual = Clipboard.text;
-        if(FlxG.mouse.overlaps(clipboardCodeButton)){
-          addFile(myactual, 'ClipboardCode_${_cbCount}', 'hx');
-          _cbCount++;
+        @:privateAccess
+        var myactual = Clipboard.get_text();
+        if(myactual != null){
+          if(FlxG.mouse.overlaps(clipboardCodeButton)){
+            addFile(myactual, 'ClipboardCode_${_cbCount}', 'hx');
+            _cbCount++;
+          }else{
+            var woah:Array<String> = myactual.split('/');
+            var filename:String = woah[woah.length-1];
+            var ok:Array<String> = filename.split('.');
+            var ext:String = ok[ok.length-1];
+            var name:String = [for(i in ok) if(i != ext) i].join('.');
+            addFile(getUrlStuff(myactual), name, ext, filename);
+          }
         }else{
-          var woah:Array<String> = myactual.split('/');
-          var filename:String = woah[woah.length-1];
-          var ok:Array<String> = filename.split('.');
-          var ext:String = ok[ok.length-1];
-          var name:String = [for(i in ok) if(i != ext) i].join('.');
-          addFile(getUrlStuff(myactual), name, ext, filename);
+          trace('WHY IT NULL! $myactual');
         }
       }
     }
