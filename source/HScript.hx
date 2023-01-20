@@ -54,12 +54,12 @@ class HScript
 		set('ShaderFilter', openfl.filters.ShaderFilter);
 		set('StringTools', StringTools);
 		set('this', this);
-    set('Upload', Upload);
-    set('getHScript', function(name:String) {
-      if(!PlayState.instance.hscriptArray.exists(name)) return error(name, 'Script doesn\'t exist');
-      return PlayState.instance.hscriptArray.get(name);
-    });
-    set('FlxTypedGroup', FlxTypedGroup);
+		set('Upload', Upload);
+		set('getHScript', function(name:String) {
+		if(!PlayState.instance.hscriptArray.exists(name)) return error(name, 'Script doesn\'t exist');
+		return PlayState.instance.hscriptArray.get(name);
+		});
+		set('FlxTypedGroup', FlxTypedGroup);
 		execute(code);
 	}
 	public function call(sfunc:String, ?args:Array<Dynamic>)
