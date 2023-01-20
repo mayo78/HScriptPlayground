@@ -44,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v2.2.4
         with:
           name: html5Build
-          path: 'export/release/html5/bin'
+          path: 'export/release/'
