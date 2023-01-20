@@ -3,7 +3,6 @@ package;
 import flixel.util.FlxTimer;
 import lime.app.Future;
 import flixel.FlxState;
-import js.html.Clipboard;
 import flixel.text.FlxText;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
@@ -11,12 +10,9 @@ import openfl.net.FileReference;
 import openfl.events.Event;
 import flixel.FlxG;
 import flash.display.BitmapData;
-import openfl.utils.ByteArray;
-import flixel.system.FlxSound;
 import lime.media.AudioBuffer;
 import flash.media.Sound;
-import js.lib.Promise;
-import js.html.DataTransfer;
+import lime.system.Clipboard;
 
 using StringTools;
 
@@ -89,21 +85,18 @@ class DragNDrop extends FlxState
         curFile.addEventListener(Event.COMPLETE, loadedFile);
         curFile.browse();
       }else if(FlxG.mouse.overlaps(clipboardButton) || FlxG.mouse.overlaps(clipboardCodeButton)){
-        var wasCode:Bool = FlxG.mouse.overlaps(clipboardCodeButton);
-        var ireallypromise:Promise<String> = Clipboard.readText();
-        ireallypromise.then(function(myactual) {
-          if(wasCode){
-            addFile(myactual, 'ClipboardCode_${_cbCount}', 'hx');
-            _cbCount++;
-          }else{
-            var woah:Array<String> = myactual.split('/');
-            var filename:String = woah[woah.length-1];
-            var ok:String = filename.split('.');
-            var ext:String = ok[ok.length-1];
-            var name:String = [for(i in ok) if(i != ext) i].join('.');
-            addFile(new haxe.Http(myactual).requestURL(), name, ext, filename);
-          }
-        });
+        var myactual = Clipboard.text;
+        if(FlxG.mouse.overlaps(clipboardCodeButton)){
+          addFile(myactual, 'ClipboardCode_${_cbCount}', 'hx');
+          _cbCount++;
+        }else{
+          var woah:Array<String> = myactual.split('/');
+          var filename:String = woah[woah.length-1];
+          var ok:Array<String> = filename.split('.');
+          var ext:String = ok[ok.length-1];
+          var name:String = [for(i in ok) if(i != ext) i].join('.');
+          addFile(getUrlStuff(myactual), name, ext, filename);
+        }
       }
     }
     if(FlxG.keys.justPressed.ENTER){
@@ -130,7 +123,7 @@ class DragNDrop extends FlxState
     var fileExtension:String = stupidArray[stupidArray.length-1];
     var fileName:String = [for(i in stupidArray) if(i != fileExtension) i].join('.');
     trace('uploaded file ${curFile.name} detected file extension: ${fileExtension} name: ${fileName}');
-    addFile(curFile.data, fileName, fileExtension, curfile.name);
+    addFile(curFile.data, fileName, fileExtension, curFile.name);
     curFile.removeEventListener(Event.COMPLETE, uploadedFile);
     curFile.removeEventListener(Event.SELECT, loadedFile);
     curFile = null;
@@ -168,4 +161,21 @@ class DragNDrop extends FlxState
         loadedFiles.text += '\n${rawName}';
     }
   }
+
+  function getUrlStuff(url:String) {
+    var http = new haxe.Http(url);
+    var r = null;
+
+    http.onData = function (data:String)
+    {
+        r = data;
+    }
+
+    http.onError = function (error) {
+        trace('error: $error');
+    }
+
+    http.request();
+    return r;
+}
 }
